@@ -1,0 +1,154 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const gameBoard = document.getElementById('gameBoard');
+    const restartButton = document.getElementById('restartButton');
+    const scoreElement = document.getElementById('score');
+    const messageElement = document.getElementById('message'); // Message element
+    
+    let cards = [];
+    let flippedCards = [];
+    let score = 0;
+
+    // Generate card letters
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']; // 8 unique letters
+    const cardLetters = [...letters, ...letters]; // Duplicate letters for pairs
+
+    // Shuffle function
+    const shuffle = array => array.sort(() => Math.random() - 0.5);
+    const shuffledLetters = shuffle(cardLetters);
+
+    // Create cards
+    shuffledLetters.forEach((letter, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.name = letter;
+
+        const cardInner = document.createElement('div');
+        cardInner.classList.add('card-inner');
+
+        const cardFront = document.createElement('div');
+        cardFront.classList.add('front');
+
+        const cardBack = document.createElement('div');
+        cardBack.classList.add('back');
+        cardBack.textContent = letter;
+
+        cardInner.appendChild(cardFront);
+        cardInner.appendChild(cardBack);
+        card.appendChild(cardInner);
+
+        card.addEventListener('click', () => flipCard(card));
+
+        gameBoard.appendChild(card);
+        cards.push(card);
+    });
+
+    // Flip card function
+    const flipCard = (card) => {
+        if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                checkForMatch();
+            }
+        }
+    };
+
+    // Check for match
+    const checkForMatch = () => {
+        const [card1, card2] = flippedCards;
+        if (card1.dataset.name === card2.dataset.name) {
+            score += 10;
+            scoreElement.textContent = `النتيجة: ${score}`;
+            card1.classList.add('lift'); // Add lift animation
+            card2.classList.add('lift'); // Add lift animation
+            resetFlippedCards();
+            if (allCardsMatched()) {
+                setTimeout(() => {
+                    showMessage(); // Show the message
+                    setTimeout(() => {
+                        restartGame(); // Restart game after the message
+                    }, 3000); // Delay to show the message
+                }, 500); // Delay to show the completion message
+            }
+        } else {
+            // Add shake animation
+            card1.classList.add('shake');
+            card2.classList.add('shake');
+            setTimeout(() => {
+                card1.classList.remove('flipped', 'shake');
+                card2.classList.remove('flipped', 'shake');
+                resetFlippedCards();
+            }, 1000);
+        }
+    };
+
+    // Reset flipped cards array
+    const resetFlippedCards = () => {
+        flippedCards = [];
+    };
+
+    // Check if all cards are matched
+    const allCardsMatched = () => {
+        return cards.every(card => card.classList.contains('flipped'));
+    };
+
+    // Show message function
+    const showMessage = () => {
+        messageElement.textContent = "I love you Malak ❤️"; // Update message text with heart
+        messageElement.style.display = 'block'; // Show the message
+        setTimeout(() => {
+            messageElement.style.opacity = 1; // Fade in
+        }, 100); // Small delay to ensure visibility
+
+        // Hide message after a delay
+        setTimeout(() => {
+            messageElement.style.opacity = 0; // Fade out
+            setTimeout(() => {
+                messageElement.style.display = 'none'; // Hide element after fade out
+            }, 2000); // Delay to match the fade out transition
+        }, 3000); // Delay before start fading out
+    };
+
+    // Restart game
+    const restartGame = () => {
+        gameBoard.innerHTML = '';
+        cards = [];
+        flippedCards = [];
+        score = 0;
+        scoreElement.textContent = `النتيجة: ${score}`;
+        messageElement.style.opacity = 0; // Hide the message for the next game
+        // Generate and shuffle cards again
+        const shuffledLetters = shuffle(cardLetters);
+        shuffledLetters.forEach((letter, index) => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.name = letter;
+
+            const cardInner = document.createElement('div');
+            cardInner.classList.add('card-inner');
+
+            const cardFront = document.createElement('div');
+            cardFront.classList.add('front');
+
+            const cardBack = document.createElement('div');
+            cardBack.classList.add('back');
+            cardBack.textContent = letter;
+
+            cardInner.appendChild(cardFront);
+            cardInner.appendChild(cardBack);
+            card.appendChild(cardInner);
+
+            card.addEventListener('click', () => flipCard(card));
+
+            gameBoard.appendChild(card);
+            cards.push(card);
+        });
+    };
+
+    // Restart game on button click
+    restartButton.addEventListener('click', restartGame);
+
+    // Initial game setup
+    restartGame();
+});

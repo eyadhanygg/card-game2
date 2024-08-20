@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الكروت</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>لعبة الكروت</h1>
+    </header>
+    <div id="score">النتيجة: 0</div>
+    <div id="gameBoardContainer">
+        <div id="gameBoard">
+            <!-- الكروت ستتم إضافتها هنا عبر JavaScript -->
+        </div>
+        <button id="restartButton">إعادة التشغيل</button>
+    </div>
+    <div id="message">I love you Malak ❤️</div> <!-- Message element -->
+    <script src="script.js"></script>
+</body>
+</html>

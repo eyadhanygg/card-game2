@@ -1,0 +1,163 @@
+/* Existing CSS */
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-color: gray; /* خلفية رمادية */
+    overflow: hidden; /* لمنع التمرير إذا كانت الخلفية تتجاوز الشاشة */
+    position: relative; /* للتأكد من وضع الخلفية النصية */
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 0; /* الحشوة الأصلية */
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px; /* حجم النص الأصلي */
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px; /* حجم الخط الأصلي */
+}
+
+#score {
+    font-size: 24px; /* حجم النص الأصلي */
+    margin: 20px;
+}
+
+#restartButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px; /* الحشوة الأصلية */
+    font-size: 16px; /* حجم الخط الأصلي */
+}
+
+#restartButton:hover {
+    background-color: #45a049;
+}
+
+#gameBoardContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; /* المسافة بين شبكة الكروت والزر */
+}
+
+#gameBoard {
+    display: grid;
+    grid-template-columns: repeat(4, 80px); /* عدد الأعمدة مخصص لعدد الكروت */
+    grid-template-rows: repeat(4, 80px); /* عدد الصفوف مخصص لعدد الكروت */
+    grid-gap: 10px; /* المسافة بين الكروت */
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 340px; /* العرض الأقصى للشبكة يتناسب مع الكروت */
+    position: relative; /* لتكديس الكروت فوق الخلفية */
+    z-index: 1; /* التأكد من تواجد الكروت فوق الخلفية */
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: gray; /* نفس لون الخلفية */
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><text x="20" y="150" font-size="40" fill="white">Maloka ❤️ E</text><text x="20" y="450" font-size="40" fill="white">Maloka ❤️ E</text><text x="560" y="150" font-size="40" fill="white">Maloka ❤️ E</text><text x="560" y="450" font-size="40" fill="white">Maloka ❤️ E</text></svg>'); /* نص "Maloka" بجانب رمز القلب وحرف E */
+    background-repeat: no-repeat; /* عدم تكرار الخلفية */
+    background-size: cover; /* تغطية كامل الخلفية */
+    z-index: 0; /* التأكد من أن الخلفية النصية خلف الكروت */
+    pointer-events: none; /* منع التفاعل مع الخلفية النصية */
+}
+
+.card {
+    width: 80px; /* حجم الكرت */
+    height: 80px; /* حجم الكرت */
+    position: relative;
+    perspective: 1000px; /* تأثير المنظور للدوران */
+    z-index: 2; /* التأكد من تواجد الكروت فوق الخلفية */
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: transform 0.6s;
+    transform-style: preserve-3d; /* الحفاظ على الأبعاد الثلاثية للتدوير */
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg); /* تدوير الكرت 180 درجة عند النقر */
+}
+
+.card .front, .card .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* إخفاء الوجه الخلفي عند التدوير */
+}
+
+.card .front {
+    background-color: black; /* خلفية الوجه الأمامي سوداء */
+}
+
+.card .back {
+    background-color: white; /* خلفية الوجه الخلفي بيضاء */
+    color: black; /* لون النص أسود ليتماشى مع الخلفية البيضاء */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotateY(180deg); /* تدوير الوجه الخلفي بحيث يكون ظاهر عند التدوير */
+    font-size: 30px; /* حجم النص */
+}
+
+/* Hidden message initially */
+#message {
+    display: none;
+    font-size: 36px;
+    color: white;
+    background-color: black;
+    padding: 20px;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensure it's on top of everything */
+    opacity: 0;
+    transition: opacity 2s ease-in-out; /* Fade in and out effect */
+}
+
+/* Add this to your existing CSS */
+
+@keyframes lift {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.card.lift {
+    animation: lift 0.5s ease-in-out;
+}
+
+.card.shake {
+    animation: shake 0.5s ease-in-out;
+}
